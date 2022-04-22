@@ -1,28 +1,27 @@
 ﻿using System.Collections;
-
 namespace VisualGraphTraversal.Graph
 {
-    internal class NLRIterator<type> : IEnumerable
+    internal class LNRIterator<type> : IEnumerable
     {
         private Node<type> _root;
-        public NLRIterator(Node<type> root)
+        public LNRIterator(Node<type> root)
         {
             _root = root;
         }
 
         public IEnumerator GetEnumerator()
         {
-            yield return _root;
-            if(_root.Left != null)
+            if (_root.Left != null)
             {
-                foreach(var node in new NLRIterator<type>(_root.Left))
+                foreach (var node in new LNRIterator<type>(_root.Left))
                 {
                     yield return node;
                 }
             }
-            if(_root.Right != null)
+            yield return _root;
+            if (_root.Right != null)
             {
-                foreach (var node in new NLRIterator<type>(_root.Right))
+                foreach (var node in new LNRIterator<type>(_root.Right))
                 {
                     yield return node;
                 }

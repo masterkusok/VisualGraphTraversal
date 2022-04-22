@@ -2,34 +2,41 @@
 {
     internal class Node<type>
     {
-        private List<Node<type>> _children;
         private Node<type> _parent;
+        public Node<type>? Left { get; private set; }
+        public Node<type>? Right { get; private set; }
         private type _value;
         public type Value { get => _value; }
         public Node<type> Parent { get => _parent; }
-        public List<Node<type>> Children { get => _children; }
         public Node(Node<type> parent, type value)
         {
             _parent = parent;
             _value = value;
-            _children = new List<Node<type>>();
         }
-        public void AddChild(type value)
+        public void AddLeftChild(type value)
         {
-            _children.Add(new Node<type>(this, value));
+            Left = new Node<type>(this, value);
+        }
+        public void AddRightChild(type value)
+        {
+            Right = new Node<type>(this, value);
         }
         public List<type> GetAllChildrenValues()
         {
             List<type> allChildrenValues = new List<type>();
             allChildrenValues.Add(_value);
-            foreach(var child in _children)
+            if(Left != null)
             {
-                if(child is Node<type>)
+                foreach(type child in Left.GetAllChildrenValues())
                 {
-                    foreach (var childValue in child.GetAllChildrenValues())
-                    {
-                        allChildrenValues.Add(childValue);
-                    }
+                    allChildrenValues.Add(child);
+                }
+            }
+            if(Right!= null)
+            {
+                foreach (type child in Right.GetAllChildrenValues())
+                {
+                    allChildrenValues.Add(child);
                 }
             }
             return allChildrenValues;

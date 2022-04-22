@@ -2,31 +2,37 @@
 
 namespace VisualGraphTraversal.Graph
 {
-    internal class Graph<type> : IEnumerable
+    internal class Graph<type>
     {
-        private GraphIterator _iterator;
         Node<type> _rootNode;
-        public List<Node<type>> Children { get => _rootNode.Children; }
         public Node<type> RootNode { get => _rootNode; }
         public Graph(type rootValue)
         {
             _rootNode = new Node<type>(null, rootValue);
         }
-        public void SetNLRIterator()
+        public void AddLeftChild(type value)
         {
-            _iterator = new NLRIterator<type>(this);
+            _rootNode.AddLeftChild(value);
         }
-        public void AddChildren(type value)
+        public void AddRightChild(type value)
         {
-            _rootNode.AddChild(value);
+            _rootNode.AddRightChild(value);
         }
         public List<type> GetAllChildrenValues()
         {
             return _rootNode.GetAllChildrenValues();
         }
-        public IEnumerator GetEnumerator()
+        public IEnumerable GetNLREnumerator()
         {
-            return _iterator;
+            return new NLRIterator<type>(RootNode);
+        }
+        public IEnumerable GetLNREnumerator()
+        {
+            return new LNRIterator<type>(RootNode);
+        }
+        public IEnumerable GetRLNEnumerator()
+        {
+            return new RLNIterator<type>(RootNode);
         }
     }
 }
