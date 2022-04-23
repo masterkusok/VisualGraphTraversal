@@ -1,4 +1,5 @@
 using VisualGraphTraversal.Graph;
+using VisualGraphTraversal.GraphVisualizer;
 namespace VisualGraphTraversal
 {
     public partial class Form1 : Form
@@ -25,15 +26,16 @@ namespace VisualGraphTraversal
             if (graph.RootNode.Right != null)
             {
                 graph.RootNode.Right.AddLeftChild(6);
+                graph.RootNode.Right.AddRightChild(8);
                 if (graph.RootNode.Right.Left != null)
                 {
                     graph.RootNode.Right.Left.AddLeftChild(7);
+                    graph.RootNode.Right.Left.Left.AddLeftChild(9);
                 }
-                if(graph.RootNode.Right.Right != null)
-                {
-                    graph.RootNode.Right.Right.AddLeftChild(8);
-                }
+                
             }
+            IGraphVisualizer visualizer = new GraphVisualizer.GraphVisualizer<int>(graph, pictureBox1);
+            visualizer.Visualize();
         }
 
     }

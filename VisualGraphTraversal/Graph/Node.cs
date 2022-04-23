@@ -41,6 +41,17 @@
             }
             return allChildrenValues;
         }
+        public int GetNumberOfRow()
+        {
+            Node<type> thisNode = this;
+            int num = 1;
+            while (thisNode.Parent != null)
+            {
+                num++;
+                thisNode = thisNode.Parent;
+            }
+            return num;
+        }
         
     }
 }
