@@ -1,7 +1,8 @@
-﻿namespace VisualGraphTraversal.GraphVisualizer
+﻿using VisualGraphTraversal.Graph;
+namespace VisualGraphTraversal.GraphVisualizer
 {
-    interface IGraphVisualizer
+    interface IGraphVisualizer<type>
     {
-        void Visualize();
+        void Visualize(Node<type> currentNode);
     }
 }

@@ -1,19 +1,41 @@
 ﻿using VisualGraphTraversal.Graph;
-using System.Windows.Forms;
 namespace VisualGraphTraversal.GraphVisualizer
 {
-    internal class GraphVisualizer<type> : IGraphVisualizer
+    internal class GraphVisualizer<type> : IGraphVisualizer<type>
     {
+        private class VisualNode
+        {
+            public Rectangle Bounds;
+            public Node<type> Node;
+            public int NumberInRow;
+            public VisualNode(Node<type> node, Rectangle bounds, int num)
+            {
+                Bounds = bounds;
+                Node = node;
+                NumberInRow = num;
+            }
+            public VisualNode GetParent(List<VisualNode> visualNodes)
+            {
+                foreach(VisualNode node in visualNodes)
+                {
+                    if(Node.Parent == node.Node)
+                    {
+                        return node;
+                    }
+                }
+                return null;
+            }
+            
+        }
         Graph<type> _graph;
         PictureBox _pictureBox;
         int _rowHeight;
         int _edgeSize = 5;
-        List<Rectangle> _nodeRects;
+        private List<VisualNode> _visualNodes = new List<VisualNode>();
         public GraphVisualizer(Graph<type> graph, PictureBox picBox)
         {
             _graph = graph;
             _pictureBox = picBox;
-            _nodeRects = new List<Rectangle>();
             SetUpSizes();
         }
         private void SetUpSizes()
@@ -50,28 +72,93 @@ namespace VisualGraphTraversal.GraphVisualizer
         {
             for(int i = 0; i < GetNumberOfRows(); i++)
             {
-                List<Node<type>> currentRowNodes = GetAllNodesFromRow(i);
-                for (int j = 0; j < currentRowNodes.Count; j++)
+                List<Node<type>> neighbourNodes = GetAllNodesFromRow(i+1);
+                for(int j = 0; j < neighbourNodes.Count; j++)
                 {
-                    _nodeRects.Add(new Rectangle((j+1)*(_pictureBox.Width/(currentRowNodes.Count + 1)),
-                       (i - 1) * (_edgeSize + _rowHeight), _rowHeight, _rowHeight));
-                }   
+                    int numberInRow;
+                    if(neighbourNodes[j].Parent == null)
+                    {
+                        numberInRow = 1;
+                    }
+                    else
+                    {
+                        numberInRow = GetVisualNodeFromNode(neighbourNodes[j].Parent).NumberInRow * 2;
+                        if(neighbourNodes[j] == neighbourNodes[j].Parent.Left)
+                        {
+                            numberInRow--;
+                        }
+                    }
+                    _visualNodes.Add(new VisualNode(neighbourNodes[j],
+                            new Rectangle(Convert.ToInt32((numberInRow)*(_pictureBox.Width/(Math.Pow(2, i)+1))),
+                            i * _rowHeight, _rowHeight, _rowHeight), numberInRow));
+                }
             }
         }
-        private void SetAllEdgeCoords()
+        private VisualNode GetVisualNodeFromNode(Node<type> node)
         {
-
+            foreach(VisualNode visualNode in _visualNodes)
+            {
+                if(visualNode.Node == node)
+                {
+                    return visualNode;
+                }
+            }
+            return null;
         }
-        public void Visualize()
+        private void DrawAllNodes(Graphics g, Node<type> currentNode)
         {
-            SolidBrush ellipseBrush = new SolidBrush(Color.Red);
+            SolidBrush currentNodeBrush = new SolidBrush(Color.Red);
+            SolidBrush otherNodeBrush = new SolidBrush(Color.Blue);
+            foreach (VisualNode visualNode in _visualNodes)
+            {
+                if (visualNode.Node == currentNode)
+                {
+                    g.FillEllipse(currentNodeBrush, visualNode.Bounds);
+                    continue;
+                }
+                g.FillEllipse(otherNodeBrush, visualNode.Bounds);
+            }
+        }
+        private void DrawAllEdges(Graphics g, Pen pen)
+        {
+            foreach (VisualNode visualNode in _visualNodes)
+            {
+                VisualNode parent = visualNode.GetParent(_visualNodes);
+                if (parent != null)
+                {
+                    Point startPoint = new Point(parent.Bounds.X + _rowHeight / 2,
+                        parent.Bounds.Y + _rowHeight / 2);
+                    Point endPoint = new Point(visualNode.Bounds.X + _rowHeight / 2,
+                        visualNode.Bounds.Y + _rowHeight / 2); ;
+                    g.DrawLine(pen, startPoint, endPoint);
+                }
+            }
+        }
+
+        private void DrawValues(Graphics g)
+        {
+            Font font = new Font(FontFamily.GenericSerif, _edgeSize*2);
+            foreach (VisualNode visualNode in _visualNodes)
+            {
+                string value = visualNode.Node.Value.ToString();
+                if (value.Length > 5)
+                {
+                    value = value.Substring(0, 2);
+                    value += "...";
+                }
+                g.DrawString(value, font, new SolidBrush(Color.White),
+                    visualNode.Bounds.X+_rowHeight/4, visualNode.Bounds.Y + _rowHeight / 4);
+            }
+        }
+    
+        public void Visualize(Node<type> currentNode)
+        {
             Bitmap bitmap = new Bitmap(_pictureBox.Width, _pictureBox.Height);
             Graphics g = Graphics.FromImage(bitmap);
             g.Clear(Color.White);
-            foreach(Rectangle rect in _nodeRects)
-            {
-                g.FillEllipse(ellipseBrush, rect);
-            }
+            DrawAllEdges(g, new Pen(Color.Blue));
+            DrawAllNodes(g, currentNode);
+            DrawValues(g);
             _pictureBox.Image = bitmap;
         }
     }
