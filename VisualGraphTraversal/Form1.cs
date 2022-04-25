@@ -6,6 +6,7 @@ namespace VisualGraphTraversal
     {
         Graph<int> graph;
         bool isRunning = false;
+        bool stopped = false;
         public Form1()
         {
             InitializeComponent();
@@ -27,53 +28,45 @@ namespace VisualGraphTraversal
 
         private async void NLRMode_Click(object sender, EventArgs e)
         {
-            if (!isRunning)
-            {
-                OutputTextBox.Clear();
-                isRunning = true;
-                IGraphVisualizer<int> visualizer = new GraphVisualizer.GraphVisualizer<int>(graph, pictureBox1);
-                foreach (Node<int> node in graph.GetNLREnumerator())
-                {
-                    visualizer.Visualize(node);
-                    OutputTextBox.Text += $"{node.Value.ToString()} ";
-                    await Task.Delay(1000);
-                }
-                isRunning = false;
-            }
+            VisualizeMode(graph.GetNLREnumerator());
         }
 
         private async void LNRMode_Click(object sender, EventArgs e)
         {
-            if (!isRunning)
-            {
-                OutputTextBox.Clear();
-                isRunning = true;
-                IGraphVisualizer<int> visualizer = new GraphVisualizer.GraphVisualizer<int>(graph, pictureBox1);
-                foreach (Node<int> node in graph.GetLNREnumerator())
-                {
-                    visualizer.Visualize(node);
-                    OutputTextBox.Text += $"{node.Value.ToString()} ";
-                    await Task.Delay(1000);
-                }
-                isRunning = false;
-            }
+            VisualizeMode(graph.GetLNREnumerator());
         }
 
         private async void RLNMode_Click(object sender, EventArgs e)
+        {
+            VisualizeMode(graph.GetRLNEnumerator());
+        }
+        private async void VisualizeMode(System.Collections.IEnumerable enumer)
         {
             if (!isRunning)
             {
                 OutputTextBox.Clear();
                 isRunning = true;
                 IGraphVisualizer<int> visualizer = new GraphVisualizer.GraphVisualizer<int>(graph, pictureBox1);
-                foreach (Node<int> node in graph.GetRLNEnumerator())
+                foreach (Node<int> node in enumer)
                 {
+                    stopped = true;
                     visualizer.Visualize(node);
                     OutputTextBox.Text += $"{node.Value.ToString()} ";
-                    await Task.Delay(1000);
+                    await Task.Run(() =>
+                    {
+                        while (stopped) { }
+                    });
                 }
                 isRunning = false;
             }
+        }
+        private void NextElemBtn_Click(object sender, EventArgs e)
+        {
+            stopped = false;
+        }
+        private void StopBtn_Click(object sender, EventArgs e)
+        {
+            stopped=true;
         }
     }
 }

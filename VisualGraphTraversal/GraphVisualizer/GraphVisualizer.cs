@@ -134,7 +134,6 @@ namespace VisualGraphTraversal.GraphVisualizer
                 }
             }
         }
-
         private void DrawValues(Graphics g)
         {
             Font font = new Font(FontFamily.GenericSerif, _edgeSize*2);
@@ -156,7 +155,7 @@ namespace VisualGraphTraversal.GraphVisualizer
             Bitmap bitmap = new Bitmap(_pictureBox.Width, _pictureBox.Height);
             Graphics g = Graphics.FromImage(bitmap);
             g.Clear(Color.White);
-            DrawAllEdges(g, new Pen(Color.Blue));
+            DrawAllEdges(g, new Pen(new SolidBrush(Color.Blue)){Width=10});
             DrawAllNodes(g, currentNode);
             DrawValues(g);
             _pictureBox.Image = bitmap;

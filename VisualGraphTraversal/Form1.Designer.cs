@@ -34,7 +34,6 @@
             this.NLRMode = new System.Windows.Forms.Button();
             this.LNRMode = new System.Windows.Forms.Button();
             this.NextElemBtn = new System.Windows.Forms.Button();
-            this.RestartBtn = new System.Windows.Forms.Button();
             this.RLNMode = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -60,9 +59,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 20);
+            this.label1.Size = new System.Drawing.Size(67, 20);
             this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
+            this.label1.Text = "OUTPUT:";
             // 
             // NLRMode
             // 
@@ -88,19 +87,11 @@
             // 
             this.NextElemBtn.Location = new System.Drawing.Point(888, 442);
             this.NextElemBtn.Name = "NextElemBtn";
-            this.NextElemBtn.Size = new System.Drawing.Size(196, 46);
+            this.NextElemBtn.Size = new System.Drawing.Size(196, 100);
             this.NextElemBtn.TabIndex = 5;
             this.NextElemBtn.Text = "Next element";
             this.NextElemBtn.UseVisualStyleBackColor = true;
-            // 
-            // RestartBtn
-            // 
-            this.RestartBtn.Location = new System.Drawing.Point(888, 494);
-            this.RestartBtn.Name = "RestartBtn";
-            this.RestartBtn.Size = new System.Drawing.Size(196, 48);
-            this.RestartBtn.TabIndex = 6;
-            this.RestartBtn.Text = "Restart";
-            this.RestartBtn.UseVisualStyleBackColor = true;
+            this.NextElemBtn.Click += new System.EventHandler(this.NextElemBtn_Click);
             // 
             // RLNMode
             // 
@@ -118,7 +109,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1096, 568);
             this.Controls.Add(this.RLNMode);
-            this.Controls.Add(this.RestartBtn);
             this.Controls.Add(this.NextElemBtn);
             this.Controls.Add(this.LNRMode);
             this.Controls.Add(this.NLRMode);
@@ -141,7 +131,6 @@
         private Button NLRMode;
         private Button LNRMode;
         private Button NextElemBtn;
-        private Button RestartBtn;
         private Button RLNMode;
     }
 }
